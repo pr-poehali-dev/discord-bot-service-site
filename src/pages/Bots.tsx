@@ -3,12 +3,73 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Icon from '@/components/ui/icon';
 
 const Bots = () => {
   const [activeTab, setActiveTab] = useState('family');
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  const [selectedTournamentPlan, setSelectedTournamentPlan] = useState<string>('');
+
+  const additionalFeatures = [
+    { id: 'threads', name: 'Управление тредами', price: 300 },
+    { id: 'notifications', name: 'Система уведомлений', price: 200 },
+    { id: 'stats', name: 'Статистика активности', price: 250 },
+    { id: 'integration', name: 'Интеграция с API', price: 500 },
+  ];
+
+  const tournamentPlans = [
+    {
+      id: 'starter',
+      name: 'Начальный',
+      price: 1500,
+      features: [
+        '1 аккаунт для регистрации',
+        '4 сервера',
+        '0.5мм к/д проверки прав',
+      ]
+    },
+    {
+      id: 'standard',
+      name: 'Стандарт',
+      price: 2500,
+      features: [
+        '1 аккаунт для регистрации',
+        '8 серверов',
+        '0.3мм к/д проверки прав',
+      ],
+      popular: true
+    },
+    {
+      id: 'maximum',
+      name: 'Максимум',
+      price: 4000,
+      features: [
+        '2 аккаунта для регистрации',
+        '15 серверов',
+        '0.1мм к/д проверки прав',
+      ]
+    },
+  ];
+
+  const calculateFamilyTotal = () => {
+    const basePrice = 1000;
+    const featuresPrice = selectedFeatures.reduce((sum, featureId) => {
+      const feature = additionalFeatures.find(f => f.id === featureId);
+      return sum + (feature?.price || 0);
+    }, 0);
+    return basePrice + featuresPrice;
+  };
+
+  const toggleFeature = (featureId: string) => {
+    setSelectedFeatures(prev => 
+      prev.includes(featureId) 
+        ? prev.filter(id => id !== featureId)
+        : [...prev, featureId]
+    );
+  };
 
   return (
     <div className="min-h-screen">
@@ -48,7 +109,7 @@ const Bots = () => {
                     <div>
                       <CardTitle className="text-cyber-cyan text-3xl mb-2">Семейный бот</CardTitle>
                       <CardDescription className="text-gray-400 text-lg">
-                        Полнофункциональное управление семейным Discord сообществом
+                        Базовый тариф с возможностью добавления дополнительных функций
                       </CardDescription>
                     </div>
                   </div>
@@ -56,65 +117,62 @@ const Bots = () => {
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-8 mb-8">
                     <div>
-                      <h3 className="text-xl font-orbitron text-cyber-cyan mb-4">Основные функции:</h3>
+                      <h3 className="text-xl font-orbitron text-cyber-cyan mb-4">Базовые функции (включены):</h3>
                       <ul className="space-y-3">
                         <li className="flex items-start gap-3">
                           <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Автоматическое управление списками участников семьи</span>
+                          <span className="text-gray-300">Управление списками участников</span>
                         </li>
                         <li className="flex items-start gap-3">
                           <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Система баллов и наград для активных участников</span>
+                          <span className="text-gray-300">Система баллов и наград</span>
                         </li>
                         <li className="flex items-start gap-3">
                           <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Внутрисемейный магазин с уникальными товарами</span>
+                          <span className="text-gray-300">Внутрисемейный магазин</span>
                         </li>
                         <li className="flex items-start gap-3">
                           <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Автоматическая обработка заявок на вступление</span>
+                          <span className="text-gray-300">Обработка заявок</span>
                         </li>
                       </ul>
                     </div>
                     <div>
-                      <h3 className="text-xl font-orbitron text-cyber-cyan mb-4">Дополнительно:</h3>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Управление тредами и каналами семьи</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Система уведомлений о важных событиях</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Статистика активности участников</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-cyan mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Интеграция с внешними системами</span>
-                        </li>
-                      </ul>
+                      <h3 className="text-xl font-orbitron text-cyber-cyan mb-4">Дополнительные функции:</h3>
+                      <div className="space-y-3">
+                        {additionalFeatures.map((feature) => (
+                          <div key={feature.id} className="flex items-center justify-between p-3 bg-cyber-darker rounded-lg border border-cyber-cyan/20">
+                            <div className="flex items-center gap-3">
+                              <Checkbox 
+                                id={feature.id}
+                                checked={selectedFeatures.includes(feature.id)}
+                                onCheckedChange={() => toggleFeature(feature.id)}
+                              />
+                              <label htmlFor={feature.id} className="text-gray-300 cursor-pointer">
+                                {feature.name}
+                              </label>
+                            </div>
+                            <span className="text-cyber-cyan font-semibold">+{feature.price}₽</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                   
                   <div className="bg-cyber-cyan/10 border border-cyber-cyan/30 rounded-lg p-6 mb-6">
-                    <h3 className="text-2xl font-orbitron text-cyber-cyan mb-4">Цены на аренду:</h3>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="text-center">
-                        <p className="text-gray-400 mb-2">1 месяц</p>
-                        <p className="text-3xl font-bold text-cyber-cyan">1500₽</p>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-2xl font-orbitron text-cyber-cyan mb-2">Стоимость аренды:</h3>
+                        <p className="text-gray-400">Базовый тариф: 1000₽/месяц</p>
+                        {selectedFeatures.length > 0 && (
+                          <p className="text-gray-400">
+                            Доп. функции: +{calculateFamilyTotal() - 1000}₽/месяц
+                          </p>
+                        )}
                       </div>
-                      <div className="text-center">
-                        <p className="text-gray-400 mb-2">3 месяца</p>
-                        <p className="text-3xl font-bold text-cyber-cyan">4000₽</p>
-                        <p className="text-sm text-green-400">Выгода 500₽</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-gray-400 mb-2">6 месяцев</p>
-                        <p className="text-3xl font-bold text-cyber-cyan">7500₽</p>
-                        <p className="text-sm text-green-400">Выгода 1500₽</p>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-400 mb-1">Итого в месяц:</p>
+                        <p className="text-4xl font-bold text-cyber-cyan">{calculateFamilyTotal()}₽</p>
                       </div>
                     </div>
                   </div>
@@ -139,80 +197,88 @@ const Bots = () => {
                     <div>
                       <CardTitle className="text-cyber-magenta text-3xl mb-2">Турнирный бот</CardTitle>
                       <CardDescription className="text-gray-400 text-lg">
-                        Автоматизация регистрации и управления турнирами
+                        Выберите тариф под ваши потребности
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid md:grid-cols-2 gap-8 mb-8">
-                    <div>
-                      <h3 className="text-xl font-orbitron text-cyber-magenta mb-4">Поддерживаемые турниры:</h3>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">MCL (Mobile Champions League)</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">VZM (Victory Zone Masters)</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Pack Tournament</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Другие форматы на заказ</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-orbitron text-cyber-magenta mb-4">Возможности:</h3>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Автоматическая регистрация участников</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Управление цветами команд и приоритетами</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Планировщик расписания турниров</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={20} />
-                          <span className="text-gray-300">Блокировка нежелательных цветов</span>
-                        </li>
-                      </ul>
-                    </div>
+                  <div className="grid md:grid-cols-3 gap-6 mb-8">
+                    {tournamentPlans.map((plan) => (
+                      <Card 
+                        key={plan.id}
+                        className={`cursor-pointer transition-all duration-300 ${
+                          selectedTournamentPlan === plan.id
+                            ? 'bg-cyber-magenta/20 border-cyber-magenta scale-105'
+                            : 'bg-cyber-darker border-cyber-magenta/20 hover:border-cyber-magenta/50'
+                        } ${plan.popular ? 'relative' : ''}`}
+                        onClick={() => setSelectedTournamentPlan(plan.id)}
+                      >
+                        {plan.popular && (
+                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                            <span className="bg-cyber-magenta text-white px-3 py-1 rounded-full text-xs font-semibold">
+                              Популярный
+                            </span>
+                          </div>
+                        )}
+                        <CardHeader>
+                          <CardTitle className="text-cyber-magenta text-2xl text-center">
+                            {plan.name}
+                          </CardTitle>
+                          <div className="text-center pt-4">
+                            <p className="text-4xl font-orbitron font-bold text-white">
+                              {plan.price}₽
+                            </p>
+                            <p className="text-gray-400 text-sm">в месяц</p>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <ul className="space-y-3">
+                            {plan.features.map((feature, index) => (
+                              <li key={index} className="flex items-start gap-3">
+                                <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={18} />
+                                <span className="text-gray-300 text-sm">{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                  
+
                   <div className="bg-cyber-magenta/10 border border-cyber-magenta/30 rounded-lg p-6 mb-6">
-                    <h3 className="text-2xl font-orbitron text-cyber-magenta mb-4">Цены на аренду:</h3>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="text-center">
-                        <p className="text-gray-400 mb-2">1 месяц</p>
-                        <p className="text-3xl font-bold text-cyber-magenta">2000₽</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-gray-400 mb-2">3 месяца</p>
-                        <p className="text-3xl font-bold text-cyber-magenta">5500₽</p>
-                        <p className="text-sm text-green-400">Выгода 500₽</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-gray-400 mb-2">6 месяцев</p>
-                        <p className="text-3xl font-bold text-cyber-magenta">10000₽</p>
-                        <p className="text-sm text-green-400">Выгода 2000₽</p>
-                      </div>
+                    <h3 className="text-xl font-orbitron text-cyber-magenta mb-4">Все тарифы включают:</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={16} />
+                          <span className="text-gray-300 text-sm">Поддержка MCL, VZM, Pack</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={16} />
+                          <span className="text-gray-300 text-sm">Автоматическая регистрация</span>
+                        </li>
+                      </ul>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={16} />
+                          <span className="text-gray-300 text-sm">Управление цветами команд</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Icon name="Check" className="text-cyber-magenta mt-1 flex-shrink-0" size={16} />
+                          <span className="text-gray-300 text-sm">Планировщик расписания</span>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                   
                   <Link to="/dashboard">
-                    <Button size="lg" className="w-full bg-cyber-magenta text-white hover:bg-cyber-magenta/80 font-semibold text-lg">
-                      Арендовать сейчас
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-cyber-magenta text-white hover:bg-cyber-magenta/80 font-semibold text-lg"
+                      disabled={!selectedTournamentPlan}
+                    >
+                      {selectedTournamentPlan ? 'Арендовать выбранный тариф' : 'Выберите тариф'}
                     </Button>
                   </Link>
                 </CardContent>

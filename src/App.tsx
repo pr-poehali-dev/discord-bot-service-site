@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Bots from "./pages/Bots";
 import Dashboard from "./pages/Dashboard";
+import BotManagement from "./pages/BotManagement";
 import Contacts from "./pages/Contacts";
 import Changelog from "./pages/Changelog";
 import NotFound from "./pages/NotFound";
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/bots" element={<Bots />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/bot-management" element={<BotManagement />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/changelog" element={<Changelog />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

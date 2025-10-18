@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +24,27 @@ const Dashboard = () => {
     notifyNews: false,
   });
 
+  const myBots = [
+    {
+      id: 1,
+      type: 'family',
+      name: 'Семейный бот',
+      plan: 'Базовый + 2 доп. функции',
+      price: 1500,
+      expiryDate: '15.03.2024',
+      status: 'active',
+    },
+    {
+      id: 2,
+      type: 'tournament',
+      name: 'Турнирный бот',
+      plan: 'Стандарт',
+      price: 2500,
+      expiryDate: '20.03.2024',
+      status: 'active',
+    },
+  ];
+
   const handleSaveSettings = () => {
     toast({
       title: "Настройки сохранены",
@@ -35,6 +57,10 @@ const Dashboard = () => {
       title: "Пополнение баланса",
       description: "Перенаправление на страницу оплаты...",
     });
+  };
+
+  const handleManageBot = (botType: string) => {
+    navigate('/bot-management');
   };
 
   return (
@@ -69,24 +95,31 @@ const Dashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-cyber-darker rounded-lg border border-cyber-cyan/20">
-                        <div>
-                          <p className="font-semibold text-white">Семейный бот</p>
-                          <p className="text-sm text-gray-400">Активна до: 15.03.2024</p>
+                      {myBots.map((bot) => (
+                        <div key={bot.id} className="p-4 bg-cyber-darker rounded-lg border border-cyber-cyan/20">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-semibold text-white">{bot.name}</h4>
+                                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
+                                  Активен
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-gray-400">{bot.plan}</p>
+                              <p className="text-xs text-gray-500">До: {bot.expiryDate}</p>
+                            </div>
+                          </div>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="w-full mt-2"
+                            onClick={() => handleManageBot(bot.type)}
+                          >
+                            <Icon name="Settings" size={16} className="mr-2" />
+                            Управление
+                          </Button>
                         </div>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            toast({
-                              title: "Функция в разработке",
-                              description: "Панель управления скоро будет доступна",
-                            });
-                          }}
-                        >
-                          Настроить
-                        </Button>
-                      </div>
+                      ))}
                       
                       <Button 
                         className="w-full bg-cyber-cyan text-cyber-dark hover:bg-cyber-cyan/80"
@@ -171,28 +204,42 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="p-6 bg-cyber-darker rounded-lg border border-cyber-cyan/20">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-orbitron text-cyber-cyan mb-2">Семейный бот</h3>
-                          <p className="text-gray-400">Активна до: 15 марта 2024</p>
+                    {myBots.map((bot) => (
+                      <div key={bot.id} className="p-6 bg-cyber-darker rounded-lg border border-cyber-cyan/20">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-xl font-orbitron text-cyber-cyan">{bot.name}</h3>
+                              <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                                Активна
+                              </Badge>
+                            </div>
+                            <p className="text-gray-400">Тариф: {bot.plan}</p>
+                            <p className="text-gray-400">Стоимость: {bot.price}₽/месяц</p>
+                            <p className="text-gray-400">Активна до: {bot.expiryDate}</p>
+                          </div>
                         </div>
-                        <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
-                          Активна
-                        </span>
+                        <div className="flex gap-3">
+                          <Button size="sm" className="bg-cyber-cyan text-cyber-dark hover:bg-cyber-cyan/80">
+                            Продлить
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="border-cyber-cyan text-cyber-cyan"
+                            onClick={() => navigate('/bots')}
+                          >
+                            Изменить тариф
+                          </Button>
+                          <Button size="sm" variant="outline" className="border-red-500 text-red-500 hover:bg-red-500/10">
+                            Отменить
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex gap-3">
-                        <Button size="sm" className="bg-cyber-cyan text-cyber-dark hover:bg-cyber-cyan/80">
-                          Продлить
-                        </Button>
-                        <Button size="sm" variant="outline" className="border-red-500 text-red-500 hover:bg-red-500/10">
-                          Отменить
-                        </Button>
-                      </div>
-                    </div>
+                    ))}
 
                     <div className="text-center py-8">
-                      <p className="text-gray-400 mb-4">У вас нет других активных подписок</p>
+                      <p className="text-gray-400 mb-4">Хотите добавить ещё ботов?</p>
                       <Button 
                         className="bg-cyber-cyan text-cyber-dark hover:bg-cyber-cyan/80"
                         onClick={() => navigate('/bots')}
@@ -339,17 +386,17 @@ const Dashboard = () => {
                       </div>
                       <div className="flex items-center justify-between p-3 bg-cyber-darker rounded-lg">
                         <div>
-                          <p className="text-white font-semibold">Оплата подписки</p>
+                          <p className="text-white font-semibold">Оплата: Семейный бот</p>
                           <p className="text-sm text-gray-400">15.01.2024</p>
                         </div>
                         <p className="text-red-400 font-semibold">-1500₽</p>
                       </div>
                       <div className="flex items-center justify-between p-3 bg-cyber-darker rounded-lg">
                         <div>
-                          <p className="text-white font-semibold">Пополнение баланса</p>
+                          <p className="text-white font-semibold">Оплата: Турнирный бот</p>
                           <p className="text-sm text-gray-400">10.01.2024</p>
                         </div>
-                        <p className="text-green-400 font-semibold">+2000₽</p>
+                        <p className="text-red-400 font-semibold">-2500₽</p>
                       </div>
                     </div>
                   </CardContent>
