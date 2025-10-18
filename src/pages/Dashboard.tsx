@@ -60,7 +60,11 @@ const Dashboard = () => {
   };
 
   const handleManageBot = (botType: string) => {
-    navigate('/bot-management');
+    if (botType === 'family') {
+      navigate('/family-bot');
+    } else if (botType === 'tournament') {
+      navigate('/tournament-bot');
+    }
   };
 
   return (
